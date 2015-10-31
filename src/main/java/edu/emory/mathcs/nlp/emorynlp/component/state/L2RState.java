@@ -62,7 +62,7 @@ public abstract class L2RState<N extends NLPNode> extends NLPState<N>
 	{
 		setLabel(nodes[input++], prediction.getLabel());
 	}
-	
+
 	@Override
 	public boolean isTerminate()
 	{

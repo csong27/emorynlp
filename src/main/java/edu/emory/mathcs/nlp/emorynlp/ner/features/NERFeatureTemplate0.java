@@ -54,7 +54,7 @@ public class NERFeatureTemplate0<N extends NLPNode> extends NERFeatureTemplate<N
 		add(new FeatureItem<>( 2, Field.uncapitalized_simplified_word_form));
 		add(new FeatureItem<>(-2, Field.uncapitalized_simplified_word_form));
 		add(new FeatureItem<>(-2, Field.named_entity_tag));
-		
+
 		// 2-gram features
 		add(new FeatureItem<>(-1, Field.uncapitalized_simplified_word_form), new FeatureItem<>( 0, Field.uncapitalized_simplified_word_form));
 		add(new FeatureItem<>( 0, Field.uncapitalized_simplified_word_form), new FeatureItem<>( 1, Field.uncapitalized_simplified_word_form));

@@ -15,10 +15,14 @@
  */
 package edu.emory.mathcs.nlp.emorynlp.ner.features;
 
+import edu.emory.mathcs.nlp.common.util.StringUtils;
 import edu.emory.mathcs.nlp.emorynlp.component.feature.FeatureItem;
 import edu.emory.mathcs.nlp.emorynlp.component.feature.FeatureTemplate;
 import edu.emory.mathcs.nlp.emorynlp.component.node.NLPNode;
+import edu.emory.mathcs.nlp.emorynlp.component.util.PredictionHistory;
 import edu.emory.mathcs.nlp.emorynlp.ner.NERState;
+
+import javax.naming.ldap.PagedResultsControl;
 
 /**
  * @author Jinho D. Choi ({@code jinho.choi@emory.edu})
@@ -33,7 +37,11 @@ public abstract class NERFeatureTemplate<N extends NLPNode> extends FeatureTempl
 	}
 	
 //	========================= FEATURE EXTRACTORS =========================
-	
+
+	private String getPredictionHistory(N node){
+		return PredictionHistory.getInstance().getFeature(StringUtils.toLowerCase(node.getSimplifiedWordForm()));
+	}
+
 	@Override
 	protected String getFeature(FeatureItem<?> item)
 	{
@@ -42,8 +50,9 @@ public abstract class NERFeatureTemplate<N extends NLPNode> extends FeatureTempl
 		
 		switch (item.field)
 		{
-		case ambiguity_class: return null; // To be filled.
-		default: return getFeature(item, node);
+			case ambiguity_class: return null; // To be filled.
+			case prediction_history: return getPredictionHistory(node);
+			default: return getFeature(item, node);
 		}
 	}
 	

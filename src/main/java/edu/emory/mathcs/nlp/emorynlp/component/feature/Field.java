@@ -38,7 +38,9 @@ public enum Field
 	
 	// named entity recognition
 	named_entity_tag,
-	
+	prediction_history,
+
+
 	// dependency parsing features
 	dependency_label,
 	distance,

@@ -15,13 +15,17 @@
  */
 package edu.emory.mathcs.nlp.emorynlp.ner;
 
+import java.util.Arrays;
 import java.util.Map.Entry;
 
+import edu.emory.mathcs.nlp.common.util.StringUtils;
 import edu.emory.mathcs.nlp.emorynlp.component.eval.Eval;
 import edu.emory.mathcs.nlp.emorynlp.component.eval.F1Eval;
 import edu.emory.mathcs.nlp.emorynlp.component.node.NLPNode;
 import edu.emory.mathcs.nlp.emorynlp.component.state.L2RState;
 import edu.emory.mathcs.nlp.emorynlp.component.util.BILOU;
+import edu.emory.mathcs.nlp.emorynlp.component.util.PredictionHistory;
+import edu.emory.mathcs.nlp.machine_learning.prediction.StringPrediction;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 
 /**
@@ -52,7 +56,7 @@ public class NERState<N extends NLPNode> extends L2RState<N>
 	public void evaluate(Eval eval)
 	{
 		Int2ObjectMap<String> gMap = BILOU.collectNamedEntityMap(oracle, String::toString, 1, nodes.length);
-		Int2ObjectMap<String> sMap = BILOU.collectNamedEntityMap(nodes , this::getLabel  , 1, nodes.length);
+		Int2ObjectMap<String> sMap = BILOU.collectNamedEntityMap(nodes, this::getLabel, 1, nodes.length);
 		((F1Eval)eval).add(countCorrect(sMap, gMap), sMap.size(), gMap.size());
 	}
 	
@@ -68,5 +72,24 @@ public class NERState<N extends NLPNode> extends L2RState<N>
 		}
 		
 		return count;
+	}
+
+	@Override
+	public void next(StringPrediction prediction)
+	{
+		String word = StringUtils.toLowerCase(nodes[input].getSimplifiedWordForm());
+		String label = prediction.getLabel();
+		PredictionHistory.getInstance().addLabelCount(word, label);
+		setLabel(nodes[input++], label);
+	}
+
+	public void printLabel(){
+		String label;
+		for(N node: nodes){
+			label = getLabel(node);
+			if(label != null && label.substring(0, 1).equals("O"))
+				System.out.println(node.getID() + ":" + label);
+		}
+		System.out.println();
 	}
 }

@@ -1,12 +1,12 @@
 /**
  * Copyright 2014, Emory University
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,7 +22,7 @@ public interface ConfigXML
 {
 	String LANGUAGE		= "language";
 	String MODEL		= "model";
-	
+
 //	========================== TSV READER ==========================
 
 	String TSV		= "tsv";
@@ -49,15 +49,18 @@ public interface ConfigXML
 	String MAX_EPOCHS	= "max_epochs";
 	String BATCH_SIZE	= "batch_size";
 	String ROLL_IN		= "roll_in";
+	String LABEL_SIZE	= "label_size";
+	String FEATURE_SIZE	= "feature_size";
+	String FEATURE_HASH	= "feature_hash";
 	String BIAS			= "bias";
-	
+
 	String L1_REGULARIZATION	= "l1_regularization";
 	String LEARNING_RATE		= "learning_rate";
 	String DECAYING_RATE		= "decaying_rate";
 	String THREAD_SIZE			= "thread_size";
-	
+
 //	========================== ALGORITHMS ==========================
-	
+
 	String PERCEPTRON			= "perceptron";
 	String SOFTMAX_REGRESSION	= "softmax-regression";
 	String ADAGRAD				= "adagrad";

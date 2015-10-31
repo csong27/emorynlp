@@ -25,6 +25,13 @@ import edu.emory.mathcs.nlp.emorynlp.component.config.NLPConfig;
 import edu.emory.mathcs.nlp.emorynlp.component.eval.Eval;
 import edu.emory.mathcs.nlp.emorynlp.component.eval.F1Eval;
 import edu.emory.mathcs.nlp.emorynlp.component.node.NLPNode;
+import edu.emory.mathcs.nlp.emorynlp.component.train.TrainInfo;
+import edu.emory.mathcs.nlp.machine_learning.instance.SparseInstance;
+import edu.emory.mathcs.nlp.machine_learning.model.StringModel;
+import edu.emory.mathcs.nlp.machine_learning.optimization.OnlineOptimizer;
+import edu.emory.mathcs.nlp.machine_learning.prediction.StringPrediction;
+import edu.emory.mathcs.nlp.machine_learning.util.MLUtils;
+import edu.emory.mathcs.nlp.machine_learning.vector.SparseVector;
 
 /**
  * @author Jinho D. Choi ({@code jinho.choi@emory.edu})
@@ -73,5 +80,58 @@ public class NERTagger<N extends NLPNode> extends NLPOnlineComponent<N,NERState<
 	protected NERState<N> initState(N[] nodes)
 	{
 		return new NERState<>(nodes);
+	}
+
+	@Override
+	public void process(N[] nodes)
+	{
+		process(initState(nodes));
+	}
+
+	public void process(NERState<N> state)
+	{
+		feature_template.setState(state);
+		if (!isDecode()) state.saveOracle();
+
+		OnlineOptimizer optimizer;
+		SparseInstance inst;
+		StringModel model;
+		TrainInfo info;
+		SparseVector x;
+		float[] scores;
+		int ydot, yhat;
+		int modelID;
+		int[] Z;
+
+		while (!state.isTerminate())
+		{
+			modelID = getModelID(state);
+			model = models[modelID];
+			x = extractFeatures(state, model);
+
+			if (isTrain())
+			{
+				optimizer = optimizers[modelID];
+				info = train_info[modelID];
+				Z = getZeroCostLabels(state, model);
+				optimizer.expand(model.getLabelSize(), model.getFeatureSize());
+				scores = model.scores(x);
+				inst = new SparseInstance(Z, x, scores);
+				ydot = inst.getGoldLabel();
+				yhat = optimizer.setPredictedLabel(inst);
+				optimizer.train(inst);
+				if (info.chooseGold()) yhat = ydot;
+			}
+			else
+			{
+				scores = model.scores(x);
+				yhat = MLUtils.argmax(scores);
+			}
+			state.next(new StringPrediction(model.getLabel(yhat), scores[yhat]));
+		}
+
+		if (isEvaluate()){
+			state.evaluate(eval);
+		}
 	}
 }
