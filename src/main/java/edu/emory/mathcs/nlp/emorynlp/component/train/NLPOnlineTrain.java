@@ -126,7 +126,7 @@ public abstract class NLPOnlineTrain<N extends NLPNode,S extends NLPState<N>>
 			train(trainFiles, developFiles, component, reader, optimizers[i], models[i], info[i]);
 	}
 
-	/** Called by {@link #train(NLPConfig, TSVReader, List, List, NLPOnlineComponent)}. */
+	/** Called by {@link #train(List, List, NLPOnlineComponent)}. */
 	protected double train(List<String> trainFiles, List<String> developFiles, NLPOnlineComponent<N,?> component, TSVReader reader, OnlineOptimizer optimizer, StringModel model, TrainInfo info) {
 		int bestEpoch = -1, bestNZW = -1, nzw, epoch;
 		Random rand = new XORShiftRandom(9);

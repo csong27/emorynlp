@@ -120,18 +120,17 @@ public class NERTagger<N extends NLPNode> extends NLPOnlineComponent<N,NERState<
 				ydot = inst.getGoldLabel();
 				yhat = optimizer.setPredictedLabel(inst);
 				optimizer.train(inst);
-				if (info.chooseGold()) yhat = ydot;
+				if (info.chooseGold() || yhat == -1) yhat = ydot;
+
 			}
 			else
 			{
 				scores = model.scores(x);
-				yhat = MLUtils.argmax(scores);
+				yhat = MLUtils.argmax(scores, model.getLabelSize());
 			}
 			state.next(new StringPrediction(model.getLabel(yhat), scores[yhat]));
 		}
 
-		if (isEvaluate()){
-			state.evaluate(eval);
-		}
+		if (isEvaluate()) state.evaluate(eval);
 	}
 }
