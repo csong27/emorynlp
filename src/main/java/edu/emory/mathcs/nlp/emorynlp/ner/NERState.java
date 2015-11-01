@@ -55,6 +55,7 @@ public class NERState<N extends NLPNode> extends L2RState<N>
 	@Override
 	public void evaluate(Eval eval)
 	{
+//		printErrorLabel();
 		Int2ObjectMap<String> gMap = BILOU.collectNamedEntityMap(oracle, String::toString, 1, nodes.length);
 		Int2ObjectMap<String> sMap = BILOU.collectNamedEntityMap(nodes, this::getLabel, 1, nodes.length);
 		((F1Eval)eval).add(countCorrect(sMap, gMap), sMap.size(), gMap.size());
@@ -83,13 +84,12 @@ public class NERState<N extends NLPNode> extends L2RState<N>
 		setLabel(nodes[input++], label);
 	}
 
-	public void printLabel(){
+	public void printErrorLabel(){
 		String label;
-		for(N node: nodes){
-			label = getLabel(node);
-			if(label != null && label.substring(0, 1).equals("O"))
-				System.out.println(node.getID() + ":" + label);
+		for(int i = 1; i < nodes.length; i++){
+			label = getLabel(nodes[i]);
+			if(!label.equals(oracle[i]))
+				System.out.println("Index: " + i + ", Predicted: " + label + ", Actual: " + oracle[i]);
 		}
-		System.out.println();
 	}
 }

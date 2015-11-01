@@ -62,6 +62,7 @@ public class NERTrain extends NLPOnlineTrain<NLPNode,NERState<NLPNode>>
 	@Override
 	protected FeatureTemplate<NLPNode,NERState<NLPNode>> createFeatureTemplate()
 	{
+
 		switch (feature_template)
 		{
 			case  0: return new NERFeatureTemplate0<>();

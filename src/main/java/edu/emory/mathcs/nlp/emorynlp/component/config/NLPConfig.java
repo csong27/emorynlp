@@ -17,6 +17,7 @@ package edu.emory.mathcs.nlp.emorynlp.component.config;
 
 import java.io.InputStream;
 
+import edu.emory.mathcs.nlp.emorynlp.component.util.VectorLoader;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -54,6 +55,7 @@ public abstract class NLPConfig<N extends NLPNode> implements ConfigXML
 	{
 		xml = XMLUtils.getDocumentElement(in);
 		GlobalLexica.init(xml);
+		VectorLoader.initClustering(xml);
 	}
 
 //	=================================== GETTERS & SETTERS ===================================  

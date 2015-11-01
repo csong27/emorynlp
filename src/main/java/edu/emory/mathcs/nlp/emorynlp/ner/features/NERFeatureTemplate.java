@@ -20,6 +20,7 @@ import edu.emory.mathcs.nlp.emorynlp.component.feature.FeatureItem;
 import edu.emory.mathcs.nlp.emorynlp.component.feature.FeatureTemplate;
 import edu.emory.mathcs.nlp.emorynlp.component.node.NLPNode;
 import edu.emory.mathcs.nlp.emorynlp.component.util.PredictionHistory;
+import edu.emory.mathcs.nlp.emorynlp.component.util.VectorLoader;
 import edu.emory.mathcs.nlp.emorynlp.ner.NERState;
 
 import javax.naming.ldap.PagedResultsControl;
@@ -42,6 +43,14 @@ public abstract class NERFeatureTemplate<N extends NLPNode> extends FeatureTempl
 		return PredictionHistory.getInstance().getFeature(StringUtils.toLowerCase(node.getSimplifiedWordForm()));
 	}
 
+	private String getWord2VecCluster(N node){
+		try{
+			return VectorLoader.getInstance().getCluster(StringUtils.toLowerCase(node.getWordForm()));
+		} catch (Exception e){
+			return null;
+		}
+	}
+
 	@Override
 	protected String getFeature(FeatureItem<?> item)
 	{
@@ -52,6 +61,7 @@ public abstract class NERFeatureTemplate<N extends NLPNode> extends FeatureTempl
 		{
 			case ambiguity_class: return null; // To be filled.
 			case prediction_history: return getPredictionHistory(node);
+			case word2vec_clusters: return getWord2VecCluster(node);
 			default: return getFeature(item, node);
 		}
 	}

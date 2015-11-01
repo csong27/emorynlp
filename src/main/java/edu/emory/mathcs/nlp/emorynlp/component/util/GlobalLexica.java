@@ -16,11 +16,7 @@
 package edu.emory.mathcs.nlp.emorynlp.component.util;
 
 import java.io.ObjectInputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.w3c.dom.Element;
@@ -83,21 +79,4 @@ public class GlobalLexica
 		set.toArray(t);
 		return t;
 	}
-	
-	
-	
-	
-	
-	
-//	static public void initNamedEntityDictionary(String path)
-//	{
-//		if (path != null && !path.isEmpty())
-//			named_entity_dictionary = NLPUtils.getNERDictionary(path);
-//	}
-//	
-//	
-//	static public PrefixTree<String,NERInfoSet> getNamedEntityDictionary()
-//	{
-//		return named_entity_dictionary;
-//	}
 }

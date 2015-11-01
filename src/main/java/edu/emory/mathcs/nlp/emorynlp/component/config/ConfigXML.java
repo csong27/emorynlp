@@ -67,4 +67,11 @@ public interface ConfigXML
 	String ADAGRAD_MINI_BATCH	= "adagrad-mini-batch";
 	String ADAGRAD_REGRESSION	= "adagrad-regression";
 	String ADADELTA_MINI_BATCH	= "adadelta-mini-batch";
+//	========================== CLUSTERING ALGORITHMS ==========================
+
+	String GMEANS				= "gmeans";
+	String KMEANS				= "kmeans";
+	String NEURAL_GAS			= "neural-gas";
+	String DETERMINISTIC_ANNEALING	= "deterministic-annealing";
+
 }
