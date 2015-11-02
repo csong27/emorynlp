@@ -15,6 +15,7 @@
  */
 package edu.emory.mathcs.nlp.emorynlp.ner.features;
 
+import edu.emory.mathcs.nlp.common.util.CharUtils;
 import edu.emory.mathcs.nlp.common.util.StringUtils;
 import edu.emory.mathcs.nlp.emorynlp.component.feature.FeatureItem;
 import edu.emory.mathcs.nlp.emorynlp.component.feature.FeatureTemplate;
@@ -50,6 +51,26 @@ public abstract class NERFeatureTemplate<N extends NLPNode> extends FeatureTempl
 			return null;
 		}
 	}
+	private String getVectorNorm(N node) {
+		double[] v1 = VectorLoader.getInstance().getVector(StringUtils.toLowerCase(node.getWordForm()));
+		if(v1 == null) return null;
+		else {
+			double norm = euclideanDistance(v1, new double[v1.length]);
+			return String.format("%5.1f", norm);
+		}
+	}
+
+	private double euclideanDistance(double[] vectorA, double[] vectorB) {
+		double sum = 0.0;
+		for(int i = 0; i < vectorA.length; i++)
+			sum = sum + Math.pow((vectorA[i] - vectorB[i]), 2.0);
+		return Math.sqrt(sum);
+	}
+
+	private String getTitleFeature(N node){
+		char first = node.getWordForm().charAt(0);
+		return CharUtils.isUpperCase(first) ? "1" : "0";
+	}
 
 	@Override
 	protected String getFeature(FeatureItem<?> item)
@@ -62,6 +83,8 @@ public abstract class NERFeatureTemplate<N extends NLPNode> extends FeatureTempl
 			case ambiguity_class: return null; // To be filled.
 			case prediction_history: return getPredictionHistory(node);
 			case word2vec_clusters: return getWord2VecCluster(node);
+			case word2vec_norm: return getVectorNorm(node);
+			case title: return getTitleFeature(node);
 			default: return getFeature(item, node);
 		}
 	}

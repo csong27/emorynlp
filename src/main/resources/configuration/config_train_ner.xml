@@ -11,7 +11,7 @@
     
     <global>
         <clusters>C:\Users\Song\Course\571\brown-rcv1.clean.tokenized-CoNLL03.txt-c1000-freq1.txt.xz</clusters>
-        <word2vec>true</word2vec>
+        <word2vec>false</word2vec>
         <clustering_algorithm>gmeans</clustering_algorithm>
     </global>
 

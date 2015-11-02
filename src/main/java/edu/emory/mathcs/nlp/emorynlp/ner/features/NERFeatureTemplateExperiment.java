@@ -52,7 +52,14 @@ public class NERFeatureTemplateExperiment<N extends NLPNode> extends NERFeatureT
         add(new FeatureItem<>( 0, Field.prediction_history));
 
         //word2vec cluster
-        add(new FeatureItem<>( 0, Field.word2vec_clusters));
+//        add(new FeatureItem<>( 0, Field.word2vec_clusters));
+
+        //my n-gram
+        add(new FeatureItem<>(-2, Field.named_entity_tag), new FeatureItem<>(-1, Field.named_entity_tag));
+//
+//        add(new FeatureItem<>(-1, Field.part_of_speech_tag), new FeatureItem<>( 0, Field.part_of_speech_tag));
+//        add(new FeatureItem<>( 0, Field.part_of_speech_tag), new FeatureItem<>( 1, Field.part_of_speech_tag));
+
 
         // 2-gram features
         add(new FeatureItem<>(-1, Field.uncapitalized_simplified_word_form), new FeatureItem<>( 0, Field.uncapitalized_simplified_word_form));
@@ -73,23 +80,38 @@ public class NERFeatureTemplateExperiment<N extends NLPNode> extends NERFeatureT
         add(new FeatureItem<>(-1, Field.uncapitalized_simplified_word_form), new FeatureItem<>(-1, Field.named_entity_tag), new FeatureItem<>(-1, Field.part_of_speech_tag));
 
         // affix features
-        add(new FeatureItem<>(0, Field.suffix, 1));
+        add(new FeatureItem<>( 0, Field.suffix, 1));
         //from Lexicon Infused Phrase Embeddings for Named Entity Resolution
-        add(new FeatureItem<>(0, Field.suffix, 4));
-        add(new FeatureItem<>(0, Field.prefix, 4));
-        add(new FeatureItem<>(0, Field.prefix, 6));
-        add(new FeatureItem<>(0, Field.prefix, 10));
+        add(new FeatureItem<>( 0, Field.suffix, 4));
+        add(new FeatureItem<>( 0, Field.prefix, 4));
+//        add(new FeatureItem<>( 0, Field.prefix, 6));
+//        add(new FeatureItem<>( 0, Field.prefix, 10));
 
-        add(new FeatureItem<>( 0, Field.suffix, 4), new FeatureItem<>(0, Field.uncapitalized_simplified_word_form));
-        add(new FeatureItem<>(-1, Field.suffix, 4), new FeatureItem<>(0, Field.uncapitalized_simplified_word_form));
+        add(new FeatureItem<>( 0, Field.suffix, 4), new FeatureItem<>( 0, Field.uncapitalized_simplified_word_form));
+        add(new FeatureItem<>(-1, Field.suffix, 4), new FeatureItem<>( 0, Field.uncapitalized_simplified_word_form));
 
         // orthographic features
-        addSet(new FeatureItem<>(0, Field.orthographic));
-        addSet(new FeatureItem<>(1, Field.orthographic));
+        addSet(new FeatureItem<>(-1, Field.orthographic));
+
+        addSet(new FeatureItem<>( 0, Field.orthographic));
+        addSet(new FeatureItem<>( 1, Field.orthographic));
 
         // distributional semantics
-        addSet(new FeatureItem<>(0, Field.clusters, 0));
-        addSet(new FeatureItem<>(1, Field.clusters, 0));
-        addSet(new FeatureItem<>(2, Field.clusters, 0));
+        addSet(new FeatureItem<>( 0, Field.clusters, 0));
+        addSet(new FeatureItem<>( 1, Field.clusters, 0));
+        addSet(new FeatureItem<>( 2, Field.clusters, 0));
+
+//        addSet(new FeatureItem<>(-2, Field.binary));
+//        addSet(new FeatureItem<>(-1, Field.binary));
+        addSet(new FeatureItem<>(0, Field.binary));
+
+        //vector norm
+        add(new FeatureItem<>(-1, Field.word2vec_norm));
+        add(new FeatureItem<>( 0, Field.word2vec_norm));
+
+        //title
+        add(new FeatureItem<>(-1, Field.title), new FeatureItem<>( 0, Field.title));
+
+
     }
 }

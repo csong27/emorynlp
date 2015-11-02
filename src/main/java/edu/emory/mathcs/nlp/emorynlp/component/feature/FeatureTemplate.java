@@ -218,7 +218,7 @@ public abstract class FeatureTemplate<N extends NLPNode,S extends NLPState<N>> i
 		return list.isEmpty() ? null : list.toArray(new String[list.size()]);
 	}
 	
-	/** Called by {@link #getOrthographic(boolean)}. */
+	/** Called by {@link #getOrthographicFeatures(N)}. */
 	protected void getOrthographicFeauturesAux(List<String> list, char[] cs, boolean isFirst)
 	{
 		boolean hasDigit  = false;

@@ -55,7 +55,6 @@ public abstract class NLPConfig<N extends NLPNode> implements ConfigXML
 	{
 		xml = XMLUtils.getDocumentElement(in);
 		GlobalLexica.init(xml);
-		VectorLoader.initClustering(xml);
 	}
 
 //	=================================== GETTERS & SETTERS ===================================  

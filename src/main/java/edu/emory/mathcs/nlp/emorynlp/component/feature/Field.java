@@ -39,8 +39,7 @@ public enum Field
 	// named entity recognition
 	named_entity_tag,
 	prediction_history,
-
-
+	title,
 	// dependency parsing features
 	dependency_label,
 	distance,
@@ -49,7 +48,7 @@ public enum Field
 	// distributional semantics
 	clusters,
 	word2vec_clusters,
-
+	word2vec_norm,
 	// more
 	binary	// set
 }
