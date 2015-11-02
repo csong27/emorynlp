@@ -3,10 +3,7 @@ package edu.emory.mathcs.nlp.emorynlp.component.util;
 import edu.emory.mathcs.nlp.common.util.XMLUtils;
 import edu.emory.mathcs.nlp.emorynlp.component.config.ConfigXML;
 import org.w3c.dom.Element;
-import smile.clustering.DeterministicAnnealing;
-import smile.clustering.GMeans;
-import smile.clustering.KMeans;
-import smile.clustering.NeuralGas;
+import smile.clustering.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -32,6 +29,11 @@ public class VectorLoader implements ConfigXML{
         word_index = new HashMap<>();
         index_word = new HashMap<>();
         word_cluster = new HashMap<>();
+        try {
+            read();
+        } catch (IOException e){
+            System.out.println("Loading word embedding failed");
+        }
     }
 
     static public void initClustering(Element doc)
@@ -84,7 +86,7 @@ public class VectorLoader implements ConfigXML{
     }
 
     private void clustering(){
-        KMeans algorithm;
+        Clustering<double[]> algorithm;
         double[][] data = getVectors();
         switch (clustering_algorithm){
             case DETERMINISTIC_ANNEALING: algorithm = new DeterministicAnnealing(data, 25);break;
@@ -106,12 +108,7 @@ public class VectorLoader implements ConfigXML{
 
     public void clustering(String algorithm){
         clustering_algorithm = algorithm;
-        try {
-            read();
-            clustering();
-        } catch (IOException e){
-            System.out.println("Loading word embedding failed");
-        }
+        clustering();
     }
 
     public static void main(String[] args) throws IOException{

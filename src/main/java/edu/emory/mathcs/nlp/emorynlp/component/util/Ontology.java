@@ -11,7 +11,8 @@ public class Ontology {
 
     public String parsePhrase(String url){
         String[] arr = url.split("/");
-        return arr[arr.length - 1];
+        String str = arr[arr.length - 1];
+        return str.substring(0, str.length() - 1);
     }
     public void readOntology(String Filename) throws Exception{
         FileInputStream fstream = new FileInputStream(Filename);

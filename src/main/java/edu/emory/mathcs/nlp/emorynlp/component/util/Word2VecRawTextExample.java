@@ -34,18 +34,26 @@ public class Word2VecRawTextExample {
 
         InMemoryLookupCache cache = new InMemoryLookupCache();
         WeightLookupTable table = new InMemoryLookupTable.Builder()
-                .vectorLength(50)
-                .useAdaGrad(false)
+                .vectorLength(100)
+                .useAdaGrad(true)
                 .cache(cache)
                 .lr(0.025f).build();
 
         log.info("Building model....");
         Word2Vec vec = new Word2Vec.Builder()
-                .minWordFrequency(1).iterations(10)
-                .layerSize(50).lookupTable(table)
+                .minWordFrequency(1)
+                .iterations(10)
+                .sampling(1e-5)
+                .negativeSample(20)
+                .layerSize(100)
+                .lookupTable(table)
                 .stopWords(new ArrayList<>())
+                .useAdaGrad(true)
                 .vocabCache(cache).seed(42)
-                .windowSize(5).iterate(iter).tokenizerFactory(t).build();
+                .windowSize(8)
+                .iterate(iter)
+                .tokenizerFactory(t)
+                .build();
 
         log.info("Fitting Word2Vec model....");
         vec.fit();
