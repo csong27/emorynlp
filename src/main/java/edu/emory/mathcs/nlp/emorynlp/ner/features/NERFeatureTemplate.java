@@ -80,7 +80,7 @@ public abstract class NERFeatureTemplate<N extends NLPNode> extends FeatureTempl
 		
 		switch (item.field)
 		{
-			case ambiguity_class: return null; // To be filled.
+			case ambiguity_class: return state.getAmbiguityClass(node); // To be filled.
 			case prediction_history: return getPredictionHistory(node);
 			case word2vec_clusters: return getWord2VecCluster(node);
 			case word2vec_norm: return getVectorNorm(node);

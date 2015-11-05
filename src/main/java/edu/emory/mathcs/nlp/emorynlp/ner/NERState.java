@@ -24,6 +24,7 @@ import edu.emory.mathcs.nlp.emorynlp.component.eval.F1Eval;
 import edu.emory.mathcs.nlp.emorynlp.component.node.NLPNode;
 import edu.emory.mathcs.nlp.emorynlp.component.state.L2RState;
 import edu.emory.mathcs.nlp.emorynlp.component.util.BILOU;
+import edu.emory.mathcs.nlp.emorynlp.component.util.Dictionary;
 import edu.emory.mathcs.nlp.emorynlp.component.util.PredictionHistory;
 import edu.emory.mathcs.nlp.machine_learning.prediction.StringPrediction;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -33,11 +34,51 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
  */
 public class NERState<N extends NLPNode> extends L2RState<N>
 {
+	String[] ambiguity_classes;
+
 	public NERState(N[] nodes)
 	{
 		super(nodes);
+		ambiguity_classes = new String[nodes.length];
+		getAmbiguityClasses();
 	}
-	
+
+	private void getAmbiguityClasses()
+	{
+		ambiguity_classes[0] = null;
+		String tag, nextTag, entity, classes;
+		int i, j, k;
+		for(i = 1; i < nodes.length; i++){
+			tag = getLabel(nodes[i]).substring(0, 1);
+			if(tag.equals("O"))
+				ambiguity_classes[i] = null;
+			if(tag.equals("U"))
+				ambiguity_classes[i] = Dictionary.getInstance().getAmbiguityClass(nodes[i].getSimplifiedWordForm());
+			if(tag.equals("B")){
+				entity = nodes[i].getSimplifiedWordForm();
+				j = i + 1;
+				while(j < nodes.length){
+					nextTag = getLabel(nodes[j]).substring(0, 1);
+					entity += " " + nodes[j].getSimplifiedWordForm();
+					if(nextTag.equals("L")) break;
+					j++;
+				}
+				classes = Dictionary.getInstance().getAmbiguityClass(entity);
+				for(k = i; k <= j; k++){
+					nextTag = getLabel(nodes[j]).substring(0 , 1);
+					if(classes != null)
+						ambiguity_classes[k] = nextTag + " " + classes;
+					else
+						ambiguity_classes[k] = null;
+				}
+			}
+		}
+	}
+
+	public String getAmbiguityClass(N node){
+		return ambiguity_classes[node.getID()];
+	}
+
 	@Override
 	protected String getLabel(N node)
 	{

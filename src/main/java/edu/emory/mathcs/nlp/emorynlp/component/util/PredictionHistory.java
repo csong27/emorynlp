@@ -17,7 +17,7 @@ public class PredictionHistory {
 
     public static PredictionHistory getInstance(){
         if(instance == null){
-            System.out.println("Initialize Prediction History...");
+            System.out.println("Initialize prediction history...");
             instance = new PredictionHistory();
         }
         return instance;
