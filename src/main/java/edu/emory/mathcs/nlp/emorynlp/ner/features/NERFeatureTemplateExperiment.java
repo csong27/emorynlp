@@ -106,8 +106,13 @@ public class NERFeatureTemplateExperiment<N extends NLPNode> extends NERFeatureT
         addSet(new FeatureItem<>(0, Field.binary));
 
         //vector norm
-        add(new FeatureItem<>(-1, Field.word2vec_norm));
-        add(new FeatureItem<>( 0, Field.word2vec_norm));
+//        add(new FeatureItem<>(-1, Field.word2vec_norm));
+//        add(new FeatureItem<>(0, Field.word2vec_norm));
+        //cosine similartiy
+//        add(new FeatureItem<>(-1, Field.word2vec_cos));
+//        add(new FeatureItem<>( 0, Field.word2vec_cos));
+        addDense(new FeatureItem<>( 0, Field.word2vec_dense));
+        addDense(new FeatureItem<>(-1, Field.word2vec_dense));
 
         //title
         add(new FeatureItem<>(-1, Field.title), new FeatureItem<>( 0, Field.title));

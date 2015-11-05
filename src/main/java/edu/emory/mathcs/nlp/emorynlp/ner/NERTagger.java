@@ -131,6 +131,9 @@ public class NERTagger<N extends NLPNode> extends NLPOnlineComponent<N,NERState<
 			state.next(new StringPrediction(model.getLabel(yhat), scores[yhat]));
 		}
 
-		if (isEvaluate()) state.evaluate(eval);
+		if (isEvaluate()){
+//			state.printErrorLabel();
+			state.evaluate(eval);
+		}
 	}
 }

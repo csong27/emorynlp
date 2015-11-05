@@ -34,7 +34,7 @@ public class Word2VecRawTextExample {
 
         InMemoryLookupCache cache = new InMemoryLookupCache();
         WeightLookupTable table = new InMemoryLookupTable.Builder()
-                .vectorLength(100)
+                .vectorLength(50)
                 .useAdaGrad(true)
                 .cache(cache)
                 .lr(0.025f).build();
@@ -44,8 +44,8 @@ public class Word2VecRawTextExample {
                 .minWordFrequency(1)
                 .iterations(10)
                 .sampling(1e-5)
-                .negativeSample(20)
-                .layerSize(100)
+                .negativeSample(30)
+                .layerSize(50)
                 .lookupTable(table)
                 .stopWords(new ArrayList<>())
                 .useAdaGrad(true)

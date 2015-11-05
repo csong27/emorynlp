@@ -42,12 +42,15 @@ public abstract class FeatureTemplate<N extends NLPNode,S extends NLPState<N>> i
 	private static final long serialVersionUID = -6755594173767815098L;
 	protected List<FeatureItem<?>[]> feature_list;
 	protected List<FeatureItem<?>>   feature_set;
+	protected List<FeatureItem<?>> feature_dense;
+
 	protected S state;
 
 	public FeatureTemplate()
 	{
 		feature_list = new ArrayList<>();
 		feature_set  = new ArrayList<>();
+		feature_dense = new ArrayList<>();
 		init();
 	}
 	

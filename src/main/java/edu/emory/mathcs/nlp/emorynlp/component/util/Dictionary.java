@@ -1,7 +1,5 @@
 package edu.emory.mathcs.nlp.emorynlp.component.util;
 
-import edu.emory.mathcs.nlp.common.util.StringUtils;
-
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
