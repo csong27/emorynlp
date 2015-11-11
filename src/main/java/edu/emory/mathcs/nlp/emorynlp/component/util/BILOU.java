@@ -83,4 +83,8 @@ public enum BILOU
 	{
 		return beginIndex * size + endIndex;
 	}
+
+	public static void main(String[] args){
+		System.out.println(toBILOU("B") == toBILOU("B"));
+	}
 }

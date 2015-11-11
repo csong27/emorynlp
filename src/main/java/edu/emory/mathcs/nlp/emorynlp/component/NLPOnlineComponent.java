@@ -19,7 +19,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Stream;
 
 import edu.emory.mathcs.nlp.emorynlp.component.config.NLPConfig;
 import edu.emory.mathcs.nlp.emorynlp.component.eval.Eval;
@@ -27,6 +28,7 @@ import edu.emory.mathcs.nlp.emorynlp.component.feature.FeatureTemplate;
 import edu.emory.mathcs.nlp.emorynlp.component.node.NLPNode;
 import edu.emory.mathcs.nlp.emorynlp.component.state.NLPState;
 import edu.emory.mathcs.nlp.emorynlp.component.train.TrainInfo;
+import edu.emory.mathcs.nlp.emorynlp.component.util.Counter;
 import edu.emory.mathcs.nlp.emorynlp.component.util.NLPFlag;
 import edu.emory.mathcs.nlp.machine_learning.instance.SparseInstance;
 import edu.emory.mathcs.nlp.machine_learning.model.StringModel;
@@ -41,6 +43,7 @@ import edu.emory.mathcs.nlp.machine_learning.vector.StringVector;
  */
 public abstract class NLPOnlineComponent<N extends NLPNode,S extends NLPState<N>> implements NLPComponent<N>
 {
+	public static Map<String, Counter> error_label = new HashMap<>();
 	private static final long serialVersionUID = 59819173578703335L;
 	protected FeatureTemplate<N,S> feature_template;
 	protected OnlineOptimizer[]    optimizers;
@@ -50,6 +53,23 @@ public abstract class NLPOnlineComponent<N extends NLPNode,S extends NLPState<N>
 	protected NLPFlag              flag;
 	protected Eval                 eval;
 
+	public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue( Map<K, V> map )
+	{
+		Map<K,V> result = new LinkedHashMap<>();
+		Stream<Map.Entry<K,V>> st = map.entrySet().stream();
+
+		st.sorted(Comparator.comparing(e -> e.getValue()))
+				.forEach(e -> result.put(e.getKey(),e.getValue()));
+
+		return result;
+	}
+
+	public void printErrorLabel(){
+		error_label = sortByValue(error_label);
+		for(Map.Entry<String, Counter> entry : error_label.entrySet()) {
+			System.out.println(entry.getKey() + " & " + entry.getValue().tally());
+		}
+	}
 //	============================== CONSTRUCTORS ==============================
 
 	public NLPOnlineComponent() {}

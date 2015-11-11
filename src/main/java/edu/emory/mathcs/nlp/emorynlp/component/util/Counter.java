@@ -20,6 +20,8 @@ package edu.emory.mathcs.nlp.emorynlp.component.util;
  *
  ******************************************************************************/
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  *  The <tt>Counter</tt> class is a mutable data type to encapsulate a counter.
  *  <p>
@@ -30,9 +32,9 @@ package edu.emory.mathcs.nlp.emorynlp.component.util;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class Counter {
+public class Counter implements Comparable<Counter>{
 
-    private int count = 1;         // current value
+    private Integer count = 1;         // current value
 
     /**
      * Increments the counter by 1.
@@ -52,5 +54,15 @@ public class Counter {
 
     public void resetCount(){
         count = 0;
+    }
+
+    @Override
+    public int compareTo(Counter o){
+        return -1 * this.count.compareTo(o.count);
+    }
+
+    @Override
+    public String toString(){
+        return "" + count;
     }
 }

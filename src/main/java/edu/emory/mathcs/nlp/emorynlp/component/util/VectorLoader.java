@@ -18,6 +18,7 @@ import java.util.Map;
  */
 public class VectorLoader implements ConfigXML{
     public static VectorLoader instance;
+    private static String train_path;
     private String clustering_algorithm = "GMEANS";
     private Map<String, Integer> word_index;
     private Map<Integer, String> index_word;
@@ -29,27 +30,28 @@ public class VectorLoader implements ConfigXML{
         word_index = new HashMap<>();
         index_word = new HashMap<>();
         word_cluster = new HashMap<>();
-        try {
-            read();
-        } catch (IOException e){
-            System.out.println("Loading word embedding failed");
-        }
     }
 
     static public void initClustering(Element doc)
     {
         Element eGlobal = XMLUtils.getFirstElementByTagName(doc, "global");
-        if (eGlobal == null) return;
-        boolean word2vec = XMLUtils.getBooleanTextContentFromFirstElementByTagName(eGlobal, "word2vec");
-        if(!word2vec)   return;
+        if(eGlobal == null) return;
+        String path  = XMLUtils.getTextContentFromFirstElementByTagName(eGlobal, "word2vec");
+        if(path == null)  return;
+        train_path = path;
+        VectorLoader.getInstance().read();
+        boolean word2vec_clustering = XMLUtils.getBooleanTextContentFromFirstElementByTagName(eGlobal, "word2vec_clustering");
+        if(!word2vec_clustering)   return;
         String  algorithm  = XMLUtils.getTextContentFromFirstElementByTagName(eGlobal, "clustering_algorithm");
         if(algorithm == null) return;
-        VectorLoader.getInstance().clustering(algorithm);
+        int numOfClusters  = XMLUtils.getIntegerTextContentFromFirstElementByTagName(eGlobal, "num_of_clusters");
+        if(numOfClusters == 0)  numOfClusters = 25; //default number of clusters
+        VectorLoader.getInstance().clustering(algorithm, numOfClusters);
     }
 
-    public void read() throws IOException{
-        String train_path = "trainVector.txt";
-        System.out.println("Loading embedded word vector...");
+    public void read(){
+        if(train_path == null)  return;
+        System.out.println("Loading word embedding vector...");
         try (BufferedReader br = new BufferedReader(new FileReader(train_path))) {
             String line;
             String[] arr;
@@ -57,6 +59,7 @@ public class VectorLoader implements ConfigXML{
             while ((line = br.readLine()) != null) {
                 // process the line.
                 arr = line.split(" ");
+                if(arr.length <= 2) continue;
                 vector = new double[arr.length - 1];
                 for(int i = 1; i < arr.length; i++)
                     vector[i - 1] = Double.parseDouble(arr[i]);
@@ -64,6 +67,8 @@ public class VectorLoader implements ConfigXML{
                 index_word.put(vectors.size(), arr[0]);
                 vectors.add(vector);
             }
+        } catch (Exception e){
+            System.err.println("Load word embedding failed");
         }
     }
 
@@ -85,15 +90,16 @@ public class VectorLoader implements ConfigXML{
         return vectors.toArray(new double[vectors.size()][]);
     }
 
-    private void clustering(){
+    private void clustering(int numOfClusters){
+        System.out.println("Clustering word embedding vectors with " + numOfClusters + " clusters ...");
         Clustering<double[]> algorithm;
         double[][] data = getVectors();
         switch (clustering_algorithm){
-            case DETERMINISTIC_ANNEALING: algorithm = new DeterministicAnnealing(data, 25);break;
-            case GMEANS: algorithm = new GMeans(data, 50); break;
-            case NEURAL_GAS: algorithm = new NeuralGas(data, 25); break;
-            case KMEANS: algorithm = new KMeans(data, 25); break;
-            default: System.out.println("unknown clustering algorithms."); return;
+            case DETERMINISTIC_ANNEALING: algorithm = new DeterministicAnnealing(data, numOfClusters);break;
+            case GMEANS: algorithm = new GMeans(data, numOfClusters); break;
+            case NEURAL_GAS: algorithm = new NeuralGas(data, numOfClusters); break;
+            case KMEANS: algorithm = new KMeans(data, numOfClusters); break;
+            default: System.err.println("unknown clustering algorithms."); return;
         }
         int centroid;
         for(int i = 0; i < vectors.size(); i++){
@@ -106,9 +112,9 @@ public class VectorLoader implements ConfigXML{
         return word_cluster.get(word).toString();
     }
 
-    public void clustering(String algorithm){
+    public void clustering(String algorithm, int numOfClusters){
         clustering_algorithm = algorithm;
-        clustering();
+        clustering(numOfClusters);
     }
 
     public static void main(String[] args) throws IOException{

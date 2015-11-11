@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import edu.emory.mathcs.nlp.emorynlp.component.NLPOnlineComponent;
 import edu.emory.mathcs.nlp.emorynlp.component.config.NLPConfig;
@@ -26,6 +28,7 @@ import edu.emory.mathcs.nlp.emorynlp.component.eval.Eval;
 import edu.emory.mathcs.nlp.emorynlp.component.eval.F1Eval;
 import edu.emory.mathcs.nlp.emorynlp.component.node.NLPNode;
 import edu.emory.mathcs.nlp.emorynlp.component.train.TrainInfo;
+import edu.emory.mathcs.nlp.emorynlp.component.util.Counter;
 import edu.emory.mathcs.nlp.machine_learning.instance.SparseInstance;
 import edu.emory.mathcs.nlp.machine_learning.model.StringModel;
 import edu.emory.mathcs.nlp.machine_learning.optimization.OnlineOptimizer;
@@ -132,7 +135,8 @@ public class NERTagger<N extends NLPNode> extends NLPOnlineComponent<N,NERState<
 		}
 
 		if (isEvaluate()){
-//			state.printErrorLabel();
+			state.printErrorLabel();
+			state.updateErrorLabel(error_label);
 			state.evaluate(eval);
 		}
 	}

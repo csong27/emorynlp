@@ -33,6 +33,7 @@ import edu.emory.mathcs.nlp.emorynlp.component.util.PredictionHistory;
 import edu.emory.mathcs.nlp.emorynlp.ner.NERState;
 import edu.emory.mathcs.nlp.emorynlp.ner.NERTagger;
 import edu.emory.mathcs.nlp.emorynlp.ner.features.NERFeatureTemplate0;
+import edu.emory.mathcs.nlp.emorynlp.ner.features.NERFeatureTemplate1;
 import edu.emory.mathcs.nlp.emorynlp.ner.features.NERFeatureTemplateExperiment;
 import edu.emory.mathcs.nlp.machine_learning.model.StringModel;
 import edu.emory.mathcs.nlp.machine_learning.optimization.OnlineOptimizer;
@@ -66,7 +67,8 @@ public class NERTrain extends NLPOnlineTrain<NLPNode,NERState<NLPNode>>
 		switch (feature_template)
 		{
 			case  0: return new NERFeatureTemplate0<>();
-			case  1: return new NERFeatureTemplateExperiment<>();
+			case  1: return new NERFeatureTemplate1<>();
+			case  2: return new NERFeatureTemplateExperiment<>();
 			default: throw new IllegalArgumentException("Unknown feature template: "+feature_template);
 		}
 	}

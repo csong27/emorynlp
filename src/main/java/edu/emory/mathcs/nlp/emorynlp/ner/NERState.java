@@ -15,7 +15,7 @@
  */
 package edu.emory.mathcs.nlp.emorynlp.ner;
 
-import java.util.Arrays;
+import java.util.*;
 import java.util.Map.Entry;
 
 import edu.emory.mathcs.nlp.common.util.StringUtils;
@@ -24,10 +24,12 @@ import edu.emory.mathcs.nlp.emorynlp.component.eval.F1Eval;
 import edu.emory.mathcs.nlp.emorynlp.component.node.NLPNode;
 import edu.emory.mathcs.nlp.emorynlp.component.state.L2RState;
 import edu.emory.mathcs.nlp.emorynlp.component.util.BILOU;
+import edu.emory.mathcs.nlp.emorynlp.component.util.Counter;
 import edu.emory.mathcs.nlp.emorynlp.component.util.Dictionary;
 import edu.emory.mathcs.nlp.emorynlp.component.util.PredictionHistory;
 import edu.emory.mathcs.nlp.machine_learning.prediction.StringPrediction;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import org.intellij.lang.regexp.psi.RegExpQuantifier;
 
 /**
  * @author Jinho D. Choi ({@code jinho.choi@emory.edu})
@@ -125,11 +127,30 @@ public class NERState<N extends NLPNode> extends L2RState<N>
 	}
 
 	public void printErrorLabel(){
-		String label;
+		String label, prevLabel;
+		BILOU curr, prev;
+		for(int i = 2; i < nodes.length; i++){
+			label = nodes[i].getNamedEntityTag();
+			prevLabel = nodes[i - 1].getNamedEntityTag();
+			curr = BILOU.toBILOU(label);
+			prev = BILOU.toBILOU(prevLabel);
+			if(curr == BILOU.I || curr == BILOU.L)
+				if(prev == BILOU.B || prev == BILOU.I)
+					if(!BILOU.toTag(label).equals(BILOU.toTag(prevLabel)))
+						System.out.println(label + " & " + prevLabel + " & " + oracle[i]);
+		}
+	}
+
+	public void updateErrorLabel(Map<String, Counter> errorCounter){
+		if(errorCounter == null)
+			errorCounter = new HashMap<>();
+		String label, key;
 		for(int i = 1; i < nodes.length; i++){
 			label = getLabel(nodes[i]);
-			if(!label.equals(oracle[i]))
-				System.out.println("Index: " + i + ", Predicted: " + label + ", Actual: " + oracle[i]);
+			if(!label.equals(oracle[i])) {
+				key = nodes[i].getWordForm() + " & " + label + " & " + oracle[i];
+				errorCounter.computeIfAbsent(key, v -> new Counter()).increment();
+			}
 		}
 	}
 }

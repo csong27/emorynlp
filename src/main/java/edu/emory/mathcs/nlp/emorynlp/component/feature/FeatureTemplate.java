@@ -63,12 +63,14 @@ public abstract class FeatureTemplate<N extends NLPNode,S extends NLPState<N>> i
 	{
 		feature_list = (List<FeatureItem<?>[]>)in.readObject();
 		feature_set  = (List<FeatureItem<?>>)  in.readObject();
+		feature_dense = (List<FeatureItem<?>>)  in.readObject();
 	}
 	
 	private void writeObject(ObjectOutputStream out) throws IOException
 	{
 		out.writeObject(feature_list);
 		out.writeObject(feature_set);
+		out.writeObject(feature_dense);
 	}
 
 //	============================== INITIALIZATION ==============================

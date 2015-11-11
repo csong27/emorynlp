@@ -16,8 +16,13 @@
 package edu.emory.mathcs.nlp.dev;
 
 import java.io.ObjectInputStream;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
+import edu.emory.mathcs.nlp.emorynlp.component.util.Counter;
 import org.kohsuke.args4j.Option;
 
 import edu.emory.mathcs.nlp.common.util.BinUtils;
@@ -42,7 +47,7 @@ public class NLPEval
 	public String input_path;
 	@Option(name="-ie", usage="input file extension (default: *)", required=false, metaVar="<string>")
 	public String input_ext = "*";
-	
+
 	public <N,S>NLPEval() {}
 	
 	@SuppressWarnings("unchecked")
@@ -56,26 +61,23 @@ public class NLPEval
 		evaluate(FileUtils.getFileList(input_path, input_ext), component);
 	}
 	
-	public <S extends NLPState<NLPNode>>void evaluate(List<String> inputFiles, NLPOnlineComponent<NLPNode,S> component) throws Exception
-	{
+	public <S extends NLPState<NLPNode>>void evaluate(List<String> inputFiles, NLPOnlineComponent<NLPNode,S> component) throws Exception {
 		TSVReader reader = component.getConfiguration().getTSVReader();
 		long st, et, time = 0, tokens = 0, sentences = 0;
 		NLPNode[] nodes;
-		
+
 		// warm-up
-		component.setFlag(NLPFlag.DECODE);		
+		component.setFlag(NLPFlag.DECODE);
 		reader.open(IOUtils.createFileInputStream(inputFiles.get(0)));
-		for (int i=0; i<100 && (nodes = reader.next(NLPNode::new)) != null; i++) component.process(nodes);
+		for (int i = 0; i < 100 && (nodes = reader.next(NLPNode::new)) != null; i++) component.process(nodes);
 		reader.close();
-		
+
 		component.setFlag(NLPFlag.EVALUATE);
-		
-		for (String inputFile : inputFiles)
-		{
+
+		for (String inputFile : inputFiles) {
 			reader.open(IOUtils.createFileInputStream(inputFile));
-			
-			while ((nodes = reader.next(NLPNode::new)) != null)
-			{
+
+			while ((nodes = reader.next(NLPNode::new)) != null) {
 				st = System.currentTimeMillis();
 				component.process(nodes);
 				et = System.currentTimeMillis();
@@ -83,13 +85,14 @@ public class NLPEval
 				tokens += nodes.length - startIndex(nodes);
 				sentences++;
 			}
-			
+
 			reader.close();
 		}
-		
+
 		System.out.println(component.getEval().toString());
 		System.out.printf("Sent.  per sec: %5d\n", Math.round(1000d * sentences / time));
-		System.out.printf("Tokens per sec: %5d\n", Math.round(1000d * tokens    / time));
+		System.out.printf("Tokens per sec: %5d\n", Math.round(1000d * tokens / time));
+		component.printErrorLabel();
 	}
 	
 	private <N extends NLPNode>int startIndex(N[] nodes)
@@ -105,4 +108,6 @@ public class NLPEval
 		}
 		catch (Exception e) {e.printStackTrace();}
 	}
+
+
 }

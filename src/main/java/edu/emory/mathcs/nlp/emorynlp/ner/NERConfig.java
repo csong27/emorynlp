@@ -19,6 +19,7 @@ import java.io.InputStream;
 
 import edu.emory.mathcs.nlp.emorynlp.component.config.NLPConfig;
 import edu.emory.mathcs.nlp.emorynlp.component.node.NLPNode;
+import edu.emory.mathcs.nlp.emorynlp.component.util.Dictionary;
 import edu.emory.mathcs.nlp.emorynlp.component.util.VectorLoader;
 
 /**
@@ -32,5 +33,6 @@ public class NERConfig extends NLPConfig<NLPNode>
 	{
 		super(in);
 		VectorLoader.initClustering(xml);
+		Dictionary.initClustering(xml);
 	}
 }
